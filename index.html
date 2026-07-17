@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tirage des Couples — Sommet JAC Bouaké 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nuit-1: #150E2A;
+    --nuit-2: #241748;
+    --plum: #34205C;
+    --or: #E8A33D;
+    --or-clair: #F4CD82;
+    --corail: #E85D4C;
+    --ivoire: #F6F0E2;
+    --ivoire-mate: #C9C0DA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,163,61,0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(232,93,76,0.12), transparent),
+      linear-gradient(180deg, var(--nuit-1), var(--nuit-2) 60%, var(--plum));
+    font-family:'Inter', sans-serif;
+    color:var(--ivoire);
+    padding-bottom:60px;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:28px 18px 0;}
+
+  header{text-align:center; margin-bottom:28px; position:relative;}
+  .eyebrow{
+    font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--or-clair); opacity:.85; margin-bottom:10px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(28px,7vw,40px);
+    margin:0 0 6px; line-height:1.08;
+  }
+  h1 em{font-style:italic; color:var(--or);}
+  .sub{font-size:13.5px; color:var(--ivoire-mate); margin:0;}
+  .seal{
+    position:absolute; top:-10px; right:0; width:58px; height:58px;
+    border:1.5px solid var(--or); border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-family:'Fraunces',serif;
+    font-size:11px; color:var(--or-clair); text-align:center; line-height:1.15;
+    transform:rotate(8deg);
+  }
+
+  .card{
+    background:rgba(246,240,226,0.05);
+    border:1px solid rgba(246,240,226,0.12);
+    border-radius:18px; padding:20px; margin-bottom:16px;
+    backdrop-filter:blur(6px);
+  }
+  .card h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:17px; margin:0 0 14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card h2 .n{color:var(--or);}
+
+  .row{display:flex; gap:10px; margin-bottom:10px;}
+  input[type=text], input[type=password]{
+    flex:1; background:rgba(0,0,0,0.22); border:1px solid rgba(246,240,226,0.18);
+    border-radius:12px; padding:12px 14px; color:var(--ivoire); font-size:15px; font-family:'Inter',sans-serif;
+    outline:none;
+  }
+  input[type=text]:focus, input[type=password]:focus{border-color:var(--or);}
+  input[type=text]::placeholder, input[type=password]::placeholder{color:var(--ivoire-mate); opacity:.6;}
+
+  .gender-picker{display:flex; gap:8px; margin-bottom:12px;}
+  .gchip{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:10px; border-radius:10px; border:1px solid rgba(246,240,226,0.18);
+    font-size:13.5px; cursor:pointer; background:rgba(0,0,0,0.15);
+  }
+  .gchip input{accent-color: var(--or);}
+  .gchip:has(input:checked){border-color:var(--or); background:rgba(232,163,61,0.14); color:var(--or-clair);}
+
+  .photo-picker{
+    display:flex; align-items:center; gap:12px; margin-bottom:14px;
+  }
+  .photo-preview{
+    width:56px; height:56px; border-radius:50%; object-fit:cover;
+    border:1.5px solid var(--or); background:rgba(0,0,0,0.25);
+    display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
+  }
+  .file-btn{
+    font-size:13px; color:var(--or-clair); border:1px dashed rgba(232,163,61,0.5);
+    padding:9px 14px; border-radius:10px; cursor:pointer; background:transparent;
+    font-family:'Inter',sans-serif;
+  }
+  input[type=file]{display:none;}
+
+  .btn{
+    border:none; border-radius:12px; padding:13px 18px; font-size:14.5px; font-weight:600;
+    cursor:pointer; font-family:'Inter',sans-serif; transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-gold{background:linear-gradient(135deg, var(--or), #C97F2A); color:#241748; width:100%;}
+  .btn-ghost{background:rgba(246,240,226,0.08); color:var(--ivoire); border:1px solid rgba(246,240,226,0.18);}
+  .btn-danger{background:transparent; color:#E88A80; border:1px solid rgba(232,93,76,0.35);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  .plist{display:flex; flex-wrap:wrap; gap:10px;}
+  .pchip{
+    display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.2);
+    border:1px solid rgba(246,240,226,0.1); border-radius:30px; padding:5px 12px 5px 5px;
+    font-size:13.5px;
+  }
+  .pchip img{width:28px; height:28px; border-radius:50%; object-fit:cover;}
+  .pchip .placeholder{
+    width:28px; height:28px; border-radius:50%; background:var(--plum);
+    display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--or-clair);
+  }
+  .pchip .rm{color:#E88A80; cursor:pointer; font-size:15px; margin-left:2px; line-height:1;}
+  .pchip.used{opacity:.4;}
+  .empty{color:var(--ivoire-mate); font-size:13.5px; font-style:italic; opacity:.7;}
+
+  .count-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .count-row .stat{font-size:12.5px; color:var(--ivoire-mate);}
+  .count-row .stat b{color:var(--or-clair); font-size:15px;}
+
+  .stage{
+    text-align:center; padding:26px 10px 10px; position:relative; min-height:150px;
+  }
+  .stage-msg{color:var(--ivoire-mate); font-size:14px; padding:20px 0;}
+  .duo{
+    display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:8px;
+  }
+  .duo .p{
+    display:flex; flex-direction:column; align-items:center; width:120px;
+    opacity:0; transform:translateX(-40px);
+    animation:slideInL .55s ease forwards;
+  }
+  .duo .p.right{transform:translateX(40px); animation-name:slideInR;}
+  @keyframes slideInL{to{opacity:1; transform:translateX(0);}}
+  @keyframes slideInR{to{opacity:1; transform:translateX(0);}}
+  .duo .photo{
+    width:96px; height:96px; border-radius:50%; object-fit:cover;
+    border:2.5px solid var(--or); box-shadow:0 0 0 5px rgba(232,163,61,0.12), 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .duo .photo.placeholder{
+    background:var(--plum); display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-size:30px; color:var(--or-clair);
+  }
+  .duo .name{
+    font-family:'Fraunces', serif; font-weight:600; font-size:15px; margin-top:10px; text-align:center;
+  }
+  .amp{
+    font-family:'Fraunces', serif; font-style:italic; font-size:34px; color:var(--or);
+    margin:0 6px; align-self:center; padding-bottom:26px;
+    opacity:0; animation:pop .4s ease .35s forwards;
+  }
+  @keyframes pop{to{opacity:1;}}
+  .shuffle{
+    font-family:'Fraunces', serif; font-size:16px; color:var(--or-clair); font-style:italic;
+    animation:pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{opacity:.4;}}
+
+  .suspense-label{
+    font-family:'Fraunces', serif; font-size:15px; color:var(--or-clair); font-style:italic;
+    margin-bottom:14px; letter-spacing:.02em;
+  }
+  .duo.reel .photo{transition:none;}
+  .photo.tick{animation: tickPulse .12s ease;}
+  @keyframes tickPulse{0%{transform:scale(0.88); filter:brightness(1.4);}100%{transform:scale(1); filter:brightness(1);}}
+  .photo.locked{
+    animation: lockPop .45s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 0 0 7px rgba(232,163,61,0.35), 0 8px 26px rgba(0,0,0,0.5);
+  }
+  @keyframes lockPop{0%{transform:scale(1.18);}60%{transform:scale(0.96);}100%{transform:scale(1);}}
+  .locked-tag{
+    font-size:12px; color:var(--or-clair); opacity:0; margin-top:14px; letter-spacing:.08em; text-transform:uppercase;
+    animation: fadeUp .4s ease .1s forwards;
+  }
+  @keyframes fadeUp{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .wow-flash{
+    position:absolute; inset:0; border-radius:20px; pointer-events:none;
+    background:radial-gradient(circle at 50% 34%, rgba(216,42,58,0.4), transparent 68%);
+    opacity:0;
+  }
+  .wow-flash.play{ animation: wowFlashAnim .85s ease-out forwards; }
+  @keyframes wowFlashAnim{0%{opacity:0;} 28%{opacity:1;} 100%{opacity:0;}}
+
+  .amp{position:relative;}
+  .amp.heart-wow svg{
+    width:40px; height:40px; display:block;
+    filter:drop-shadow(0 6px 16px rgba(200,30,58,0.55));
+    animation: heartWow 1.05s cubic-bezier(.22,1.6,.4,1) forwards;
+  }
+  @keyframes heartWow{
+    0%{opacity:0; transform:scale(0.2) rotate(-10deg);}
+    45%{opacity:1; transform:scale(1.4) rotate(5deg);}
+    62%{transform:scale(0.9) rotate(-3deg);}
+    78%{transform:scale(1.12) rotate(1.5deg);}
+    100%{opacity:1; transform:scale(1) rotate(0deg);}
+  }
+  .amp.heart-wow .shock{
+    position:absolute; left:50%; top:50%; width:40px; height:40px;
+    margin:-20px 0 0 -20px; border-radius:50%; border:2px solid rgba(216,42,58,0.55);
+    animation: shockwave .9s ease-out forwards;
+  }
+  @keyframes shockwave{
+    0%{transform:scale(0.4); opacity:.9; border-width:3px;}
+    100%{transform:scale(4.2); opacity:0; border-width:0.5px;}
+  }
+  .heart-particle{position:fixed; pointer-events:none; z-index:7;}
+
+  .hist-item{
+    display:flex; align-items:center; gap:10px; padding:10px 0;
+    border-bottom:1px solid rgba(246,240,226,0.08); font-size:14px;
+  }
+  .hist-item:last-child{border-bottom:none;}
+  .hist-item img, .hist-item .placeholder{
+    width:30px; height:30px; border-radius:50%; object-fit:cover; border:1.5px solid var(--nuit-2);
+  }
+  .hist-item .avs{display:flex;}
+  .hist-item .avs img:last-child, .hist-item .avs .placeholder:last-child{margin-left:-10px;}
+  .hist-item .placeholder{
+    background:var(--plum); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--or-clair);
+  }
+  .hist-num{color:var(--or-clair); font-size:12px; width:18px;}
+
+  .confetti{position:fixed; top:-10px; width:8px; height:8px; border-radius:2px; z-index:5; pointer-events:none;}
+
+  .footnote{text-align:center; font-size:11.5px; color:var(--ivoire-mate); opacity:.55; margin-top:22px; padding:0 20px;}
+
+  .confirm-box{
+    text-align:center; padding:18px 10px; border-radius:14px;
+    background:rgba(232,163,61,0.1); border:1px solid rgba(232,163,61,0.3);
+  }
+  .confirm-box .big{font-family:'Fraunces',serif; font-size:19px; color:var(--or-clair); margin-bottom:4px;}
+  .lock-row{display:flex; gap:10px;}
+  .lock-row input{flex:1;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="seal">JAC<br>2026</div>
+    <div class="eyebrow">Sommet JAC · Bouaké</div>
+    <h1>Tirage des <em>Couples</em></h1>
+    <p class="sub">Inscrivez-vous à la soirée : votre âme sœur vous attend peut-être ici.</p>
+  </header>
+
+  <!-- INSCRIPTION PUBLIQUE -->
+  <div class="card" id="registerCard">
+    <h2><span class="n">✦</span> Votre inscription</h2>
+    <div class="row">
+      <input type="text" id="nameInput" placeholder="Votre nom" maxlength="40">
+    </div>
+    <div class="gender-picker" id="genderPicker">
+      <label class="gchip"><input type="radio" name="gender" value="H" checked><span>Homme</span></label>
+      <label class="gchip"><input type="radio" name="gender" value="F"><span>Femme</span></label>
+    </div>
+    <div class="photo-picker">
+      <div class="photo-preview" id="photoPreview">🙂</div>
+      <label class="file-btn" for="photoInput">📷 Choisir / prendre une photo</label>
+      <input type="file" id="photoInput" accept="image/*">
+    </div>
+    <button class="btn btn-gold" id="addBtn">Je m'inscris</button>
+    <p style="font-size:11.5px;color:var(--ivoire-mate);opacity:.6;margin:10px 0 0;">Déjà <b id="publicCount">0</b> inscrit(e)s à la soirée.</p>
+  </div>
+  <div class="card" id="confirmCard" style="display:none;">
+    <div class="confirm-box">
+      <div class="big">Inscription confirmée ✨</div>
+      <div>À ce soir pour le tirage, <span id="confirmName"></span> !</div>
+    </div>
+  </div>
+
+  <!-- ESPACE ORGANISATEUR -->
+  <div class="card" id="adminGate">
+    <h2>🔒 Espace organisateur</h2>
+    <div class="lock-row">
+      <input type="password" id="passInput" placeholder="Code organisateur">
+      <button class="btn btn-ghost" id="unlockBtn">Déverrouiller</button>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <div class="card">
+      <h2><span class="n">01</span> Participants inscrits</h2>
+      <div class="count-row">
+        <span class="stat"><b id="totalCount">0</b> inscrits</span>
+        <span class="stat"><b id="remainingCount">0 H / 0 F</b> disponibles</span>
+      </div>
+      <div class="plist" id="plist"><span class="empty">Aucun participant pour l'instant.</span></div>
+      <button class="btn btn-ghost" id="refreshBtn" style="width:100%;margin-top:14px;">↻ Actualiser la liste</button>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">02</span> Tirage au sort</h2>
+      <div class="stage" id="stage">
+        <div class="stage-msg">Ajoutez au moins un homme et une femme pour lancer le premier tirage.</div>
+      </div>
+      <button class="btn btn-gold" id="drawBtn" disabled>✨ Tirer un couple</button>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn btn-ghost" id="resetDrawBtn" style="flex:1;">Réinitialiser le tirage</button>
+        <button class="btn btn-danger" id="resetAllBtn" style="flex:1;">Tout effacer</button>
+      </div>
+    </div>
+
+    <div class="card" id="histCard" style="display:none;">
+      <h2><span class="n">03</span> Couples formés</h2>
+      <div id="histList"></div>
+    </div>
+  </div>
+
+  <p class="footnote">Le lien d'inscription peut être partagé librement : chacun enregistre son propre nom, sexe et photo. Le tirage et la gestion des participants restent réservés à l'espace organisateur (code d'accès).</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, deleteDoc, getDocs, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1sCzbGgJNdrSDCKrUwkCnAY-Xs7q9iuU",
+  authDomain: "gen-lang-client-0577645241.firebaseapp.com",
+  projectId: "gen-lang-client-0577645241",
+  storageBucket: "gen-lang-client-0577645241.firebasestorage.app",
+  messagingSenderId: "896029599730",
+  appId: "1:896029599730:web:da1b0768fe0cde95dded6b"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp, 'ai-studio-6a9bc20d-efee-4e34-8678-15e7d3c49845');
+const participantsCol = collection(db, 'jac2026_participants');
+const pairsCol = collection(db, 'jac2026_pairs');
+
+const ADMIN_CODE = 'JAC2026';
+let adminUnlocked = false;
+let stageBusy = false;
+
+let participants = [];
+let pairs = [];
+let pendingPhoto = null;
+let isSubmitting = false;
+
+function initials(name){
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+}
+function escapeHTML(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+/* ---------- Stockage partagé (Firebase Firestore) ---------- */
+/* Chaque participant / couple est un document distinct pour éviter les
+   pertes de données quand plusieurs personnes s'inscrivent en même temps. */
+
+function subscribeParticipants(){
+  onSnapshot(participantsCol, (snap)=>{
+    participants = snap.docs.map(d=>d.data()).sort((a,b)=>a.ts - b.ts);
+    renderPublicCount();
+    if(adminUnlocked){ renderPlist(); renderCounts(); renderHistory(); if(!stageBusy) renderStageIdle(); }
+  }, (err)=>{ console.error('Erreur de synchronisation des participants', err); });
+}
+
+function subscribePairs(){
+  onSnapshot(pairsCol, (snap)=>{
+    pairs = snap.docs.map(d=>d.data()).sort((a,b)=>a.ts - b.ts);
+    if(adminUnlocked){ renderPlist(); renderCounts(); renderHistory(); if(!stageBusy) renderStageIdle(); }
+  }, (err)=>{ console.error('Erreur de synchronisation des couples', err); });
+}
+
+/* ---------- Inscription publique ---------- */
+
+function resizeImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const size = 110;
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const minSide = Math.min(img.width, img.height);
+        const sx = (img.width-minSide)/2, sy=(img.height-minSide)/2;
+        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('photoInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    pendingPhoto = await resizeImage(file);
+    document.getElementById('photoPreview').innerHTML = `<img src="${pendingPhoto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  }catch(err){
+    console.error(err);
+  }
+});
+
+document.getElementById('addBtn').addEventListener('click', async ()=>{
+  if(isSubmitting) return;
+  const input = document.getElementById('nameInput');
+  const name = input.value.trim();
+  if(!name){ input.focus(); return; }
+  isSubmitting = true;
+  const gender = document.querySelector('input[name="gender"]:checked').value;
+  const id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  const participant = { id, name, gender, photo: pendingPhoto, ts: Date.now() };
+
+  const btn = document.getElementById('addBtn');
+  btn.disabled = true; btn.textContent = 'Inscription en cours…';
+  try{
+    await setDoc(doc(participantsCol, id), participant);
+    document.getElementById('registerCard').style.display = 'none';
+    document.getElementById('confirmName').textContent = name;
+    document.getElementById('confirmCard').style.display = 'block';
+  }catch(e){
+    console.error(e);
+    alert("L'inscription n'a pas pu être enregistrée, veuillez réessayer.");
+    btn.disabled = false; btn.textContent = "Je m'inscris";
+    isSubmitting = false;
+  }
+  renderPublicCount();
+  if(adminUnlocked) renderAdmin();
+});
+
+function renderPublicCount(){
+  document.getElementById('publicCount').textContent = participants.length;
+}
+
+/* ---------- Espace organisateur ---------- */
+
+document.getElementById('unlockBtn').addEventListener('click', async ()=>{
+  const val = document.getElementById('passInput').value;
+  if(val === ADMIN_CODE){
+    adminUnlocked = true;
+    document.getElementById('adminGate').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    renderAdmin();
+  } else {
+    alert('Code incorrect.');
+  }
+});
+
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  renderAdmin();
+});
+
+function pairedIds(){
+  const s = new Set();
+  pairs.forEach(pr=>{ s.add(pr.p1.id); s.add(pr.p2.id); });
+  return s;
+}
+function remainingParticipants(){
+  const used = pairedIds();
+  return participants.filter(p=>!used.has(p.id));
+}
+function remainingMen(){ return remainingParticipants().filter(p=>p.gender==='H'); }
+function remainingWomen(){ return remainingParticipants().filter(p=>p.gender==='F'); }
+
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Sons du tirage (synthétisés, aucun fichier audio requis) ---------- */
+let audioCtx = null;
+function getAudioCtx(){
+  try{
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      audioCtx = new AC();
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }catch(e){ return null; }
+}
+function playTone(ctx, freq, startTime, duration, type, peak){
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, startTime);
+  gain.gain.linearRampToValueAtTime(peak, startTime + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.05);
+}
+function playSuspenseTick(){
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  playTone(ctx, 1000, ctx.currentTime, 0.045, 'square', 0.045);
+}
+function playRomanticChime(){
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const now = ctx.currentTime;
+  playTone(ctx, 261.63, now, 1.7, 'sine', 0.10);
+  const notes = [523.25, 659.25, 783.99, 1046.50];
+  notes.forEach((freq, i)=>{
+    playTone(ctx, freq, now + i*0.12, 1.0, 'sine', 0.20);
+  });
+}
+
+function setReelSlot(photoId, nameId, person){
+  const photoEl = document.getElementById(photoId);
+  const nameEl = document.getElementById(nameId);
+  if(!photoEl || !nameEl) return;
+  if(person.photo){
+    photoEl.classList.remove('placeholder');
+    photoEl.innerHTML = `<img src="${person.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  } else {
+    photoEl.classList.add('placeholder');
+    photoEl.textContent = initials(person.name);
+  }
+  nameEl.textContent = person.name;
+  photoEl.classList.remove('tick');
+  void photoEl.offsetWidth;
+  photoEl.classList.add('tick');
+}
+
+async function runSuspense(men, women, finalP1, finalP2){
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <div class="wow-flash" id="wowFlash"></div>
+    <div class="suspense-label">⌛ Tirage en cours…</div>
+    <div class="duo reel">
+      <div class="p"><div class="photo placeholder" id="reelP1">?</div><div class="name" id="reelN1">—</div></div>
+      <div class="amp" id="ampSign">&amp;</div>
+      <div class="p right"><div class="photo placeholder" id="reelP2">?</div><div class="name" id="reelN2">—</div></div>
+    </div>
+    <div class="locked-tag" id="lockedTag" style="visibility:hidden;">✓ Couple formé</div>`;
+
+  const delays = prefersReducedMotion
+    ? [200, 200]
+    : [70,70,80,90,100,110,130,150,180,210,250,300,360,430];
+
+  for(let i=0;i<delays.length;i++){
+    const randMan = men[Math.floor(Math.random()*men.length)];
+    const randWoman = women[Math.floor(Math.random()*women.length)];
+    setReelSlot('reelP1','reelN1', randMan);
+    setReelSlot('reelP2','reelN2', randWoman);
+    playSuspenseTick();
+    await sleep(delays[i]);
+  }
+
+  setReelSlot('reelP1','reelN1', finalP1);
+  setReelSlot('reelP2','reelN2', finalP2);
+  document.getElementById('reelP1').classList.add('locked');
+  document.getElementById('reelP2').classList.add('locked');
+  document.querySelector('.suspense-label').textContent = 'Couple tiré !';
+  document.getElementById('lockedTag').style.visibility = 'visible';
+  document.getElementById('wowFlash').classList.add('play');
+
+  const amp = document.getElementById('ampSign');
+  amp.innerHTML = '<span class="shock"></span>' + HEART_SVG;
+  amp.classList.add('heart-wow');
+
+  spawnHeartBurst();
+  playRomanticChime();
+  await sleep(450);
+}
+
+const HEART_SVG = '<svg viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF7A7A"/><stop offset="55%" stop-color="#E23B4E"/><stop offset="100%" stop-color="#B01A34"/></linearGradient></defs><path d="M23.6 0c-3 0-5.7 1.6-7.6 4.2C14.1 1.6 11.4 0 8.4 0 3.8 0 0 3.7 0 8.4c0 8 9.6 13.4 14.6 17.9.5.5 1.3.5 1.8 0C21.4 21.8 32 16.4 32 8.4 32 3.7 28.2 0 23.6 0z" fill="url(#heartGrad)" stroke="#F4CD82" stroke-width="0.5"/></svg>';
+
+function spawnHeartBurst(){
+  const stageEl = document.getElementById('stage');
+  const rect = stageEl.getBoundingClientRect();
+  const originX = rect.left + rect.width/2;
+  const originY = rect.top + 46;
+  const glyphs = ['❤','❤','❤','✨'];
+  const count = prefersReducedMotion ? 0 : 22;
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'heart-particle';
+    el.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    el.style.left = originX + 'px';
+    el.style.top = originY + 'px';
+    el.style.fontSize = (13 + Math.random()*15) + 'px';
+    el.style.color = Math.random() < 0.75 ? ['#E23B4E','#FF7A7A','#B01A34'][Math.floor(Math.random()*3)] : '#F4CD82';
+    document.body.appendChild(el);
+    const angle = Math.random()*Math.PI*2;
+    const dist = 55 + Math.random()*130;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist*0.6 - 20;
+    const rot = (Math.random()*360)-180;
+    const duration = 900 + Math.random()*600;
+    el.animate([
+      {transform:'translate(-50%,-50%) translate(0,0) rotate(0deg) scale(0.3)', opacity:0},
+      {transform:`translate(-50%,-50%) translate(${dx*0.35}px, ${dy*0.35}px) rotate(${rot*0.3}deg) scale(1.15)`, opacity:1, offset:0.32},
+      {transform:`translate(-50%,-50%) translate(${dx}px, ${dy+90}px) rotate(${rot}deg) scale(0.75)`, opacity:0}
+    ], {duration, easing:'cubic-bezier(.2,.7,.3,1)'});
+    setTimeout(()=>el.remove(), duration+60);
+  }
+}
+
+document.getElementById('drawBtn').addEventListener('click', async ()=>{
+  const men = remainingMen();
+  const women = remainingWomen();
+  if(men.length < 1 || women.length < 1) return;
+  document.getElementById('drawBtn').disabled = true;
+  stageBusy = true;
+
+  const p1 = men[Math.floor(Math.random()*men.length)];
+  const p2 = women[Math.floor(Math.random()*women.length)];
+
+  await runSuspense(men, women, p1, p2);
+
+  const pairId = 'pr_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  const pairObj = { id: pairId, p1, p2, ts: Date.now() };
+  try{
+    await setDoc(doc(pairsCol, pairId), pairObj);
+  }catch(e){
+    console.error('Erreur en enregistrant le couple', e);
+    alert("Le couple n'a pas pu être enregistré, veuillez réessayer.");
+  }
+
+  stageBusy = false;
+  renderCounts();
+  renderPlist();
+  renderHistory();
+  document.getElementById('drawBtn').disabled = (remainingMen().length===0 || remainingWomen().length===0);
+});
+
+document.getElementById('resetDrawBtn').addEventListener('click', async ()=>{
+  if(pairs.length===0) return;
+  if(!confirm('Effacer les couples déjà formés pour recommencer un nouveau tirage ? Les participants restent enregistrés.')) return;
+  try{
+    const snap = await getDocs(pairsCol);
+    await Promise.all(snap.docs.map(d=>deleteDoc(d.ref).catch(()=>{})));
+  }catch(e){ console.error(e); }
+  pairs = [];
+  renderAdmin();
+});
+
+document.getElementById('resetAllBtn').addEventListener('click', async ()=>{
+  if(!confirm('Supprimer TOUS les participants et TOUS les couples ? Cette action est irréversible pour tout le monde.')) return;
+  try{
+    const snapP = await getDocs(participantsCol);
+    await Promise.all(snapP.docs.map(d=>deleteDoc(d.ref).catch(()=>{})));
+    const snapPr = await getDocs(pairsCol);
+    await Promise.all(snapPr.docs.map(d=>deleteDoc(d.ref).catch(()=>{})));
+  }catch(e){ console.error(e); }
+  participants = [];
+  pairs = [];
+  renderAdmin();
+  renderPublicCount();
+});
+
+function avatarHTML(p, size){
+  if(p.photo) return `<img src="${p.photo}" style="width:${size}px;height:${size}px;">`;
+  return `<div class="placeholder" style="width:${size}px;height:${size}px;">${initials(p.name)}</div>`;
+}
+
+function renderPlist(){
+  const el = document.getElementById('plist');
+  if(participants.length===0){
+    el.innerHTML = "<span class=\"empty\">Aucun participant pour l'instant.</span>";
+    return;
+  }
+  const used = pairedIds();
+  el.innerHTML = participants.map(p=>{
+    const isUsed = used.has(p.id);
+    return `<div class="pchip ${isUsed?'used':''}">
+      ${p.photo ? `<img src="${p.photo}">` : `<div class="placeholder">${initials(p.name)}</div>`}
+      <span>${escapeHTML(p.name)} <span style="opacity:.6;font-size:11px;">${p.gender==='H'?'♂':'♀'}</span>${isUsed?' ✓':''}</span>
+      <span class="rm" data-id="${p.id}" title="Retirer">✕</span>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.rm').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.getAttribute('data-id');
+      try{
+        await deleteDoc(doc(participantsCol, id));
+        const toRemovePairs = pairs.filter(pr=>pr.p1.id===id || pr.p2.id===id);
+        await Promise.all(toRemovePairs.map(pr=>deleteDoc(doc(pairsCol, pr.id)).catch(()=>{})));
+      }catch(e){ console.error(e); }
+      participants = participants.filter(p=>p.id!==id);
+      pairs = pairs.filter(pr=>pr.p1.id!==id && pr.p2.id!==id);
+      renderAdmin();
+      renderPublicCount();
+    });
+  });
+}
+
+function renderCounts(){
+  document.getElementById('totalCount').textContent = participants.length;
+  document.getElementById('remainingCount').textContent = `${remainingMen().length} H / ${remainingWomen().length} F`;
+}
+
+function renderStageIdle(){
+  const stage = document.getElementById('stage');
+  const men = remainingMen();
+  const women = remainingWomen();
+  const drawBtn = document.getElementById('drawBtn');
+  if(participants.length < 2){
+    stage.innerHTML = '<div class="stage-msg">Ajoutez au moins un homme et une femme pour lancer le premier tirage.</div>';
+    drawBtn.disabled = true;
+  } else if(men.length===0 && women.length===0){
+    stage.innerHTML = '<div class="stage-msg">Tout le monde a été tiré ✨ Réinitialisez le tirage pour recommencer une série.</div>';
+    drawBtn.disabled = true;
+  } else if(men.length===0){
+    stage.innerHTML = `<div class="stage-msg">Il ne reste que des femmes sans binôme (${women.length}). Ajoutez un homme ou réinitialisez le tirage.</div>`;
+    drawBtn.disabled = true;
+  } else if(women.length===0){
+    stage.innerHTML = `<div class="stage-msg">Il ne reste que des hommes sans binôme (${men.length}). Ajoutez une femme ou réinitialisez le tirage.</div>`;
+    drawBtn.disabled = true;
+  } else {
+    stage.innerHTML = `<div class="stage-msg">${men.length} homme(s) et ${women.length} femme(s) disponibles. Appuyez sur « Tirer un couple ».</div>`;
+    drawBtn.disabled = false;
+  }
+}
+
+function renderHistory(){
+  const card = document.getElementById('histCard');
+  const list = document.getElementById('histList');
+  if(pairs.length===0){ card.style.display='none'; return; }
+  card.style.display='block';
+  list.innerHTML = pairs.slice().reverse().map((pr, idx)=>{
+    const num = pairs.length - idx;
+    return `<div class="hist-item">
+      <span class="hist-num">${num}.</span>
+      <div class="avs">${avatarHTML(pr.p1,30)}${avatarHTML(pr.p2,30)}</div>
+      <span>${escapeHTML(pr.p1.name)} &amp; ${escapeHTML(pr.p2.name)}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderAdmin(){
+  renderPlist();
+  renderCounts();
+  renderStageIdle();
+  renderHistory();
+}
+
+function init(){
+  subscribeParticipants();
+  subscribePairs();
+}
+init();
+
+</script>
+</body>
+</html>
